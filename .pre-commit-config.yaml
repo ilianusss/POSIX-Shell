@@ -1,0 +1,38 @@
+repos:
+- repo: local
+  hooks:
+  - id: clang-format
+    name: Coding style respected
+    entry: clang-format --Werror --dry-run
+    language: system
+    files: \.(c|h)$
+  - id: clang-tidy
+    name: Coding tidy respected
+    entry: clang-tidy --quiet
+    language: system
+    files: \.(c)$
+  - id: check-strdup
+    name: No strdup used
+    entry: .git/hooks/check_strdup.py
+    language: python
+    types: [c]
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: trailing-whitespace
+    name: No trailing whitespace
+    exclude: ^tests/
+  - id: check-added-large-files
+    name: No too large files
+    args: ["--maxkb=16000000"]
+  - id: end-of-file-fixer
+    name: Corrects end of files
+    exclude: (\.(err|in|out|txt)$|\.apps/)
+  - id: check-merge-conflict
+    name: No merge conflicts marker
+    args: ["--assume-in-merge"]
+- repo: https://github.com/jumanjihouse/pre-commit-hooks
+  rev: 2.1.4
+  hooks:
+  - id: forbid-binary
+    name: No binaries

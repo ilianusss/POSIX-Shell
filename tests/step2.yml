@@ -1,0 +1,225 @@
+tests:
+  # Redirections
+    # Simple
+  - name: "Output redirection >"
+    command: "echo 'Hello, file!' > tests/output; cat tests/output"
+
+  - name: "Append output redirection >>"
+    command: "echo 'Line 1' > tests/output; echo 'Line 2' >> tests/output; cat tests/output"
+
+  - name: "Input redirection <"
+    command: "echo 'File Input Test' > tests/input; cat < tests/input"
+
+  - name: "Input-output redirection <>"
+    command: "echo 'Bidirectional Test' > tests/input; cat <> tests/input > tests/output; cat tests/output"
+  
+  - name: "Standard stdout redirection >&"
+    command: "echo 'Error message' >&1 > tests/output; cat tests/output"
+
+  - name: "Clobber output redirection >|"
+    command: "echo 'Overwrite allowed' >| tests/output; cat tests/output"
+
+  - name: "Redirect stdout explicitly with 1>"
+    command: "echo 'Explicit stdout redirection' 1> tests/output; cat tests/output"
+
+  - name: "Append to stdout explicitly with 1>>"
+    command: "echo First line > tests/output; echo Appended line 1>> tests/output; cat tests/output"
+
+  - name: "Redirect stderr explicitly with 2>"
+    command: "ls non_existing_file 2> tests/output; cat tests/output"
+
+  - name: "Redirect both stdout and stderr with explicit fd"
+    command: "echo 'Message to stdout' 1> tests/output; echo 'Message to stderr' 2>> tests/output; cat tests/output"
+
+  - name: "Clobber redirection with explicit fd"
+    command: "echo 'Clobber test' 1>| tests/output; cat tests/output"
+
+    # Combinaisons
+  - name: "Output and append redirection"
+    command: "echo 'First line' > tests/output; echo 'Second line' >> tests/output; cat tests/output"
+
+  - name: "Input and output redirection"
+    command: "echo 'Input to Output' > tests/input; cat < tests/input > tests/output; cat tests/output"
+
+  - name: "Redirect stdout and stderr together >&"
+    command: "echo 'Output' > tests/output 2>&1; echo 'Error' >&2 >> tests/output; cat tests/output"
+
+  - name: "Append and overwrite combination"
+    command: "echo 'Overwrite' >| tests/output; echo 'Appended line' >> tests/output; cat tests/output"
+
+  - name: "Pipeline with input and output redirection"
+    command: "echo 'Pipeline Content' > tests/input; cat < tests/input | tr a-z A-Z > tests/output; cat tests/output"
+
+  - name: "Multiple redirections in a single command"
+    command: "echo 'Combined Test' > tests/output 2>&1 < tests/input; cat tests/output"
+    
+    # Complexes
+  - name: "Combination of >, >>, and >&"
+    command: "echo First message > tests/output; echo Second message >> tests/output; echo Error message >&2 >> tests/output; cat tests/output"
+
+  - name: "Pipeline and clobber redirection"
+    command: "echo PipelineContent > tests/input; cat < tests/input | tr a-z A-Z >| tests/output; cat tests/output"
+
+  - name: "Input-output redirection combined with stderr >&"
+    command: "echo Main content > tests/input; cat <> tests/input > tests/output 2>&1; cat tests/output"
+
+  - name: "Complex chain of redirections and pipelines"
+    command: "echo Start > tests/input; cat < tests/input | tr a-z A-Z >| tests/output; echo Extra content >> tests/output; cat tests/output"
+
+  # Pipelines
+  - name: "Simple pipeline with two commands"
+    command: "echo Hello | tr a-z A-Z"
+
+  - name: "Pipeline with three commands"
+    command: "echo Hello | tr a-z A-Z | rev"
+
+  - name: "Pipeline with multiple transformations"
+    command: "echo 'pipeline test' | tr a-z A-Z | sed 's/TEST/WORKING/'"
+
+  - name: "Pipeline with empty input"
+    command: "echo '' | tr a-z A-Z"
+
+  - name: "Pipeline where first command fails"
+    command: "ls non_existing_file | echo Still works"
+  - name: "Pipeline with multiple newlines in output"
+    command: "echo -e 'line1\nline2\nline3' | grep line"
+
+  - name: "Pipeline with input redirection"
+    command: "echo Input > tests/input; cat < tests/input | tr a-z A-Z"
+
+  - name: "Pipeline with negation in first command"
+    command: "! false | echo Negated"
+
+  - name: "Pipeline with if command"
+    command: "if echo Hello | grep H; then echo Pass; else echo Fail; fi"
+
+  - name: "Pipeline with logical operators"
+    command: "echo First | tr a-z A-Z && echo Second | tr a-z A-Z || echo Fail"
+
+  # While & Until
+  - name: "While loop that exits immediately with false"
+    command: "while false; do echo 'Should not execute'; done; echo 'Exited loop'"
+
+  - name: "While loop with only one iteration"
+    command: "while echo 'Condition' && false; do echo 'Loop executed'; done; echo 'Loop exited'"
+
+  - name: "Until loop with only one iteration"
+    command: "until echo 'Condition' && true; do echo 'Loop executed'; done; echo 'Loop exited'"
+
+  - name: "Until loop with nested commands"
+    command: "until echo 'Outer condition' && true; do echo 'Inner command'; done; echo 'Loop exited'"
+
+  - name: "Until loop with logical OR in condition"
+    command: "until echo 'Condition' || false; do echo 'Loop executed'; false; done; echo 'Loop exited'"
+
+  - name: "Until loop with multiple echo commands"
+    command: "until echo 'Condition' && true; do echo 'First command'; echo 'Second command'; done; echo 'Loop exited'"
+
+  # For
+  - name: "For loop with numeric values"
+    command: "for i in 1 2 3; do echo $i; done"
+
+  - name: "For loop with string values"
+    command: "for i in apple banana cherry; do echo $i; done"
+
+  - name: "For loop with single iteration"
+    command: "for i in single; do echo $i; done"
+
+  # Logical operators && ||
+  - name: "Logical AND with true commands"
+    command: "echo First && echo Second"
+
+  - name: "Logical AND with first command failing"
+    command: "false && echo Should not execute"
+
+  - name: "Logical OR with first command failing"
+    command: "false || echo Recovered"
+
+  - name: "Logical OR with true first command"
+    command: "true || echo Should not execute"
+
+  - name: "Logical AND with multiple commands"
+    command: "echo First && echo Second && echo Third"
+
+  - name: "Logical OR with multiple commands"
+    command: "false || echo First || echo Second"
+
+  - name: "Logical AND combined with false in the middle"
+    command: "echo Start && false && echo Should not execute"
+
+  - name: "Logical OR combined with true in the middle"
+    command: "false || echo First || echo Should not execute"
+
+  - name: "Logical AND with a pipeline"
+    command: "echo Hello | grep Hello && echo Found"
+
+  - name: "Logical OR with a pipeline"
+    command: "echo Missing | grep NotHere || echo Not Found"
+
+  - name: "Logical AND with redirection"
+    command: "echo First > tests/output && echo Second >> tests/output; cat tests/output"
+
+  - name: "Logical OR with redirection"
+    command: "false || echo Recovery > tests/output; cat tests/output"
+
+  - name: "Logical OR with an until loop"
+    command: "until echo Condition || true; do echo Loop executed; done; echo Loop exited"
+
+  # Double quotes
+  - name: "Echo with escaped double quotes inside"
+    command: "echo "Hello \"World\"""
+
+  - name: "Echo with escaped backslash"
+    command: "echo "Hello \\World""
+
+  - name: "Echo with escaped newline"
+    command: "echo "Line1\nLine2""
+
+  - name: "Escaped double quotes spanning multiple lines"
+    command: "echo -E "a\n\"b\z\" \"c\z"" "
+
+  - name: "Escaped character not interpreted"
+    command: "echo "Hello \\World""
+
+  - name: "Double quotes with multiple escape sequences"
+    command: "echo "This is \"escaped\" \n\twith backslash""
+
+  - name: "Double quotes with pipeline and escape characters"
+    command: "echo "Pipe|line" | grep Pipe"
+
+  - name: "Double quotes with logical AND and escape characters"
+    command: "echo "First \"line\"" && echo "Second \"line\"""
+
+  - name: "Double quotes with redirection and escape characters"
+    command: "echo "Redirect \"Output\"" > tests/output; cat tests/output"
+
+  # Variables
+  - name: "Simple variable assignment and substitution"
+    command: "var=Hello; echo $var"
+
+  - name: "Variable assignment with numeric value"
+    command: "var=42; echo $var"
+
+  - name: "Variable assignment with special characters"
+    command: "var='Hello, World!'; echo \"$var\""
+
+  - name: "Variable reassignment"
+    command: "var=Initial; echo $var; var=Updated; echo $var"
+
+  - name: "Variable with empty value"
+    command: "var=; echo \"$var\""
+
+  - name: "Accessing special variable $? (exit status)"
+    command: "true; echo $?; false; echo $?"
+    
+  - name: "Assigning and using multiple variables"
+    command: "var1=Hello; var2=World; echo \"$var1 $var2\""
+
+  - name: "Using variable in redirection"
+    command: "output=tests/output; echo Hello > tests/output; cat tests/output"
+
+  - name: "Variable with escaped special characters"
+    command: "var="Hello \"World\""; echo $var"
+
+  - name: "Variable used with a pipeline"
+    command: "var=42; echo $var | tr 0-9 a-j"

@@ -1,0 +1,154 @@
+tests:
+  # Simple Commands (Builtins and External)
+  - name: "echo with no options"
+    command: "echo Hello World"
+
+  - name: "echo with -n (no newline)"
+    command: "echo -n Hello, World!"
+
+  - name: "echo with -e (escape sequences)"
+    command: "echo -e 'Line1\nLine2\tTabbed\\Text'"
+    expected_output: "Line1\nLine2\tTabbed\Text"
+    expected_status: 0
+
+  - name: "echo with -E (disable escape sequences)"
+    command: "echo -E 'Line1\nLine2\tNoTab'"
+  
+  - name: "echo with multiples options (nE)"
+    command: "echo -E 'Line1\nLine2\tNoTab'"
+
+  - name: "External command (printf)"
+    command: "printf 'Hello\nWorld\n'"
+
+  - name: "True builtin"
+    command: "true"
+
+  - name: "False builtin"
+    command: "false"
+
+  # Command Lists
+  - name: "Commands list without final semicolon"
+    command: "echo First; echo Second; echo Third"
+  
+  - name: "Commands list with final semicolon"
+    command: "echo First; echo Second; echo Third;"
+
+  # If Commands
+  - name: "if with true condition"
+    command: "if true; then echo Success; fi"
+
+  - name: "if with false condition"
+    command: "if false; then echo ThisShouldNotPrint; fi"
+
+  - name: "If-else with true condition"
+    command: "if true; then echo TrueBranch; else echo FalseBranch; fi"
+
+  - name: "If-else with false condition"
+    command: "if false; then echo TrueBranch; else echo FalseBranch; fi"
+
+  - name: "If-elif-else with multiple conditions"
+    command: "if false; then echo FirstBranch; elif true; then echo SecondBranch; else echo FinalBranch; fi"
+
+  - name: "Nested if blocks"
+    command: "if true; then if false; then echo InnerFail; else echo InnerSuccess; fi; fi"
+  
+  - name: "Nested if blocks with an elif"
+    command: "if false; then echo First; elif true; then echo Second; else echo Third; fi"
+
+  - name: "if colliding keywords"
+    command: "if echo if else then; then echo fi; fi"
+
+  # Compound Lists (Newlines and Semicolons)
+  - name: "Compound if-then with newlines"
+    command: "if true;\n then echo BlockSuccess;\n fi"
+
+  - name: "Compound with multiple commands"
+    command: "if true; then echo Line1; echo Line2; fi"
+  
+  - name: "Compound with multiple commands and newlines"
+    command: "if true; then \n\necho Line1;\n\necho Line2; fi"
+  
+  - name: "Compound with multiple commands and newlines + newlines delimiter"
+    command: "if true; then \n\necho Line1\n\necho Line2; fi"
+
+  # Single Quotes
+  - name: "echo with single quotes"
+    command: "echo 'Single quoted text'"
+
+  - name: "Single quotes with semicolons in echo"
+    command: "echo 'Text; inside; quotes'"
+
+  # Comments
+  - name: "Beginning with comment"
+    command: "# This is a comment\n echo CommentSkipped"
+
+  - name: "Comment after a command"
+    command: "echo Hello # This is a comment"
+
+  # Combinaisons
+  - name: "If block with newline inside then"
+    command: "if true; then echo 'First'; echo 'Second'; fi"
+
+  - name: "Chained commands with complex if"
+    command: "if true; then echo First; elif false; then echo Second; else echo Third; fi; echo End"
+
+  - name: "Commands with protected newlines in single quotes"
+    command: "echo 'Line 1\nLine 2'"
+
+  - name: "Complex nested if with outputs"
+    command: "if true; then echo OuterStart; if false; then echo InnerFalse; else echo InnerTrue; fi; echo OuterEnd; fi"
+
+    - name: "Simple valid nested if"
+    command: "if true; then echo 'Outer if'; if true; then echo 'Inner if'; fi; fi"
+
+  - name: "If-elif-else with commands in all branches"
+    command: "if false; then echo 'Branch 1'; elif false; then echo 'Branch 2'; else echo 'Branch 3'; fi"
+
+  - name: "Trailing semicolon with valid commands"
+    command: "echo 'First'; echo 'Second';"
+
+  - name: "Multiple semicolons separating valid commands"
+    command: "echo 'Command 1'; echo 'Command 2'; echo 'Command 3';"
+
+  - name: "Nested if with comments"
+    command: "if true; then echo 'Outer'; # Comment\nif false; then echo 'Inner'; else echo 'Fallback'; fi; fi"
+
+  - name: "Semicolon in single-quoted string"
+    command: "echo 'This; is; valid'; echo 'End'"
+
+  - name: "Nested if-elif-else with multiple commands"
+    command: "if false; then\necho 'Branch 1';\nelif true; then\necho 'Branch 2.1'; echo 'Branch 2.2';\nelse\necho 'Branch 3';\nfi"
+
+  - name: "If with semicolon after commands"
+    command: "if true; then echo 'Valid'; echo 'Also valid'; fi; echo 'Done'"
+
+  - name: "Chained commands with interleaved comments"
+    command: "echo 'Line 1'; # Comment\necho 'Line 2'; echo 'Line 3'"
+
+  - name: "Nested if with elif"
+    command: "if true; then echo 'Outer'; if false; then echo 'Inner'; elif true; then echo 'Fallback'; fi; fi"
+
+  - name: "If-else with commands in both branches"
+    command: "if false; then echo 'Then branch'; else echo 'Else branch'; echo 'Still in else'; fi"
+
+  - name: "Compound list with multiple commands in if"
+    command: "if true; then echo 'First'; echo 'Second'; else echo 'Third'; fi"
+
+  - name: "Long chain of commands in single if branch"
+    command: "if true; then echo 'Step 1'; echo 'Step 2'; echo 'Step 3'; echo 'Step 4'; fi"
+
+  # Edge Cases
+  - name: "Empty command"
+    command: ""
+  
+  - name: "Only newline"
+    command: "\n"
+
+  - name: "Only a comment"
+    command: "# Just a comment"
+
+  - name: "Long echo"
+   command: "echo Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Proin eget velit dapibus, viverra elit at, scelerisque ligula. Curabitur non metus sit amet ligula pharetra consequat. Fusce ullamcorper ex id justo elementum, ut fermentum nisi dignissim. Aliquam erat volutpat. Integer maximus accumsan turpis, vel efficitur tortor scelerisque sed. Vestibulum quis diam eu ligula euismod vestibulum. Donec bibendum, est sed fermentum lacinia, eros sem fermentum velit, id auctor risus nisl ac sem. Suspendisse fringilla tincidunt sapien non elementum. Nam porttitor neque eu dui tincidunt, sed interdum libero pretium. Vestibulum venenatis, nisl id interdum vehicula, nulla ipsum varius elit, at fringilla urna neque non sem. Praesent posuere vehicula ante, sit amet efficitur risus aliquet vel. Cras consectetur odio nec pharetra mollis. Nulla vehicula bibendum eros, sit amet pellentesque metus ultrices sed. Etiam gravida sem et sapien accumsan, a facilisis ex feugiat. Pellentesque et pharetra lacus, vel scelerisque quam. Donec consequat enim a sem aliquet, sed vulputate ex tincidunt. Integer quis sodales tortor, nec ultricies nisl. Cras suscipit turpis vel fermentum mattis. Nam eu lorem nisl. Donec vehicula nisl felis, sit amet fermentum purus convallis nec. Vestibulum dictum mi nec sapien molestie, nec feugiat libero tincidunt. Nam tristique tristique ipsum, et luctus ex viverra vel. Phasellus vehicula turpis eu accumsan aliquet. Fusce volutpat magna sit amet scelerisque blandit. Etiam non metus nec nulla accumsan interdum in non nisi. Phasellus sit amet orci dictum, cursus erat ut, eleifend justo. Aenean fermentum felis id nulla dapibus, nec porttitor nisi tristique. Nulla sed erat purus. Cras dictum orci in dolor luctus, at accumsan libero pellentesque. Aliquam erat volutpat. Praesent in dui eu nulla feugiat bibendum sed in libero. Mauris sed mauris vel arcu dignissim sollicitudin. Nulla faucibus nisl libero, id laoreet lectus scelerisque quis. Sed facilisis lacus nec urna egestas congue. Suspendisse posuere, libero et convallis venenatis, risus elit efficitur nisl, ut aliquam sem orci in ligula. Sed a tincidunt velit, quis fringilla nisl. Proin ut nisi a felis vehicula ultrices. Quisque pretium, lorem vitae tincidunt sollicitudin, justo lectus facilisis neque, id pharetra sem lectus nec erat. Suspendisse potenti. Cras nec odio turpis. Donec ut lacus orci. Sed pretium eu eros sit amet viverra. Maecenas sit amet justo nec nulla vulputate condimentum id ut mi. Fusce efficitur tortor magna, sit amet feugiat mi scelerisque non. Mauris rhoncus mauris sed gravida lacinia. Curabitur lacinia orci felis, et scelerisque magna luctus eget. Sed efficitur scelerisque mi, ut vulputate ligula gravida a. Nulla facilisi. Mauris sit amet tortor at nisi venenatis cursus ac quis elit. Suspendisse potenti. Donec malesuada nunc nec est malesuada, ut aliquet mauris hendrerit. Pellentesque vel feugiat velit, nec egestas velit. Nam vitae magna venenatis, bibendum erat eget, pharetra libero. Aliquam in enim accumsan, sodales lacus eget, congue risus. Sed tristique viverra tempor. Vestibulum pharetra sagittis lectus. Suspendisse nec eros luctus, ultricies enim a, efficitur risus. Curabitur vestibulum id eros sit amet ornare. Duis a varius elit, sit amet rhoncus magna. Nulla nec mi nec quam accumsan malesuada ac vel lorem. Nullam eu magna vel orci eleifend dictum. Integer ultricies elit libero, id elementum ipsum malesuada vitae. Praesent suscipit mi at urna posuere luctus. Integer porttitor sed ipsum et tristique. Ut ac augue eu nunc pharetra rutrum id eget quam. Nam nec nisi ligula. Curabitur feugiat, lacus a venenatis ullamcorper, tortor nulla tristique ligula, vel efficitur velit ligula et purus. Duis porttitor justo non orci venenatis sodales. Nam in dolor nec metus tristique scelerisque at id nisi. Nulla iaculis felis ex, sed accumsan erat laoreet sed. Ut pharetra tincidunt mollis. Mauris in convallis nisl, ac pharetra lorem. Suspendisse et viverra lacus. Donec venenatis nulla orci, a suscipit arcu rutrum vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam dictum purus id sodales egestas. Nullam luctus, nisi in dapibus sodales, odio magna elementum metus, vitae feugiat erat lacus vitae elit. In at augue ut libero lacinia euismod. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer sit amet eros a nunc luctus maximus non sed purus. Phasellus sit amet nisl vulputate, pulvinar dolor eu, lobortis lectus. Quisque vel sollicitudin enim. Vestibulum fermentum nisi id augue convallis, nec vehicula risus facilisis. Ut sit amet odio ac justo pellentesque sodales sed ac elit. Aenean gravida, odio a tincidunt efficitur, urna eros sollicitudin nisi, eget tempus urna lorem ac sapien. Vestibulum iaculis, nunc eget fringilla scelerisque, metus magna pharetra augue, in dictum tortor eros vel justo."
+
+  - name: "Full grammar usage"
+    command: "if true; then \necho 'First command'; \necho Second; \necho Third; \nelse \necho Fail; \nfi"
